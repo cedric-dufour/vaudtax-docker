@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Update path to installed browser and PDF reader
+USER_CONFIG_DIR='/home/vaudtax/data/VaudTax%{VAUDTAX_YEAR}/config'
+USER_CONFIG_FILE="${USER_CONFIG_DIR}/user-config.properties"
+mkdir -p "${USER_CONFIG_DIR}"
+touch "${USER_CONFIG_FILE}"
+sed -i -E '/^(browser|acroread)\.path/d' "${USER_CONFIG_FILE}"
+cat >> "${USER_CONFIG_FILE}" <<EOF
+browser.path.use=true
+browser.path=/usr/bin/epiphany-browser
+acroread.path.use=true
+acroread.path=/usr/bin/evince
+EOF
+
+# Launch VaudTax
+exec /opt/vaudtax-linux/vaudtax-%{VAUDTAX_YEAR}

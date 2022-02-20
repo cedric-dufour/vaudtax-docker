@@ -1,0 +1,9 @@
+#!/bin/sh
+[ -z "${VAUDTAX_YEAR}" ] && echo 'ERROR: Missing VAUDTY_YEAR environment variable' && exit 1
+exec docker build \
+  --file=Dockerfile \
+  --tag=local/vaudtax:${VAUDTAX_YEAR} \
+  --build-arg VAUDTAX_YEAR=${VAUDTAX_YEAR} \
+  --build-arg VAUDTAX_UID=$(id -u) \
+  --build-arg VAUDTAX_GID=$(id -g) \
+  .

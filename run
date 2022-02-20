@@ -1,0 +1,21 @@
+#!/bin/sh
+[ -z "${VAUDTAX_YEAR}" ] && echo 'ERROR: Missing VAUDTAX_YEAR environment variable' && exit 1
+[ -z "${XAUTHORITY}" ] && XAUTHORITY="${HOME}/.Xauthority"
+exec docker run \
+  --name=vaudtax \
+  --privileged \
+  --network=host \
+  --tty \
+  --interactive \
+  --rm=true \
+  --env=LANG=fr_CH.UTF-8 \
+  --env=DISPLAY=${DISPLAY} \
+  --env=XAUTHORITY=/home/vaudtax/.Xauthority \
+  --device=/dev/dri:/dev/dri \
+  --volume=/tmp/.X11-unix:/tmp/.X11-unix:rw \
+  --volume=${XAUTHORITY}:/home/vaudtax/.Xauthority:ro \
+  ${VAUDTAX_DATA:+--volume=${VAUDTAX_DATA}:/home/vaudtax/data:rw} \
+  --user=_vaudtax \
+  --workdir=/home/vaudtax/data \
+  local/vaudtax:${VAUDTAX_YEAR} \
+  /bin/bash /usr/local/bin/vaudtax
