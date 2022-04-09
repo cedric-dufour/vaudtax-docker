@@ -1,5 +1,5 @@
 ## Installer
-FROM ubuntu:bionic AS installer
+FROM ubuntu:focal AS installer
 
 ARG VAUDTAX_YEAR
 ENV VAUDTAX_DOWNLOAD_URL="https://vaudtax-dl.vd.ch/vaudtax${VAUDTAX_YEAR}/telechargement/linux/64bit/VaudTax_${VAUDTAX_YEAR}.tar.gz"
@@ -32,18 +32,13 @@ RUN \
 
 
 ## VaudTax
-FROM ubuntu:bionic AS vaudtax
+FROM ubuntu:focal AS vaudtax
 
 ARG VAUDTAX_YEAR
 ARG VAUDTAX_UID=1000
 ARG VAUDTAX_GID=1000
 
 # OS dependencies
-# NOTA BENE:
-# - VaudTax requires libwebkitgtk-1.0 *and* libwebkit2gtk-4.0
-#   (despite what error messages might lead one to believe)
-# - VaudTax tarball does *not* include libwebkitgtk-1.0
-#   (despite what the installation documentation might lead one to believe)
 RUN \
     export DEBIAN_FRONTEND='noninteractive' \
     && echo 'locales locales/locales_to_be_generated string fr_CH.UTF-8 UTF-8' | debconf-set-selections \
@@ -53,10 +48,9 @@ RUN \
        curl \
        epiphany-browser \
        evince \
-       libwebkitgtk-1.0-0 \
        libwebkit2gtk-4.0-37 \
        locales \
-       openjdk-8-jre \
+       openjdk-11-jre \
        sudo \
        tzdata \
     && apt-get clean \
